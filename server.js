@@ -79,6 +79,30 @@ fs.readFile('./db/db.json', 'utf8', (err, data) => {
 //     }
 // });
 }})
+app.delete('/api/notes/:id', (req, res) => {
+    const id = req.params.id;
+
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+
+        let notes = JSON.parse(data);
+        const updatedNotes = notes.filter(note => note.id !== id);
+
+        fs.writeFile('./db/db.json', JSON.stringify(updatedNotes, null, 4), writeErr => {
+            if (writeErr) {
+                console.error(writeErr);
+                res.status(500).json({ error: 'Internal Server Error' });
+                return;
+            }
+
+            res.status(200).json({ message: 'Note deleted successfully' });
+        });
+    });
+});
 
 
 app.listen(PORT, () =>
