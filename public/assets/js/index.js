@@ -1,50 +1,22 @@
-let noteForm = null;
-let noteTitle = null;
-let noteText = null;
-let saveNoteBtn = null;
-let newNoteBtn = null;
-let noteList = null;
-let clearBtn = null;
+let noteForm;
+let noteTitle;
+let noteText;
+let saveNoteBtn;
+let newNoteBtn;
+let noteList;
 
-if (window.location.pathname === '/notes') {
+console.log(window.location.pathname);
+
+if (window.location.pathname === '/notes.html') {
   noteForm = document.querySelector('.note-form');
-  if (noteForm) {
-    noteTitle = document.querySelector('.note-title');
-    noteText = document.querySelector('.note-textarea');
-    saveNoteBtn = document.querySelector('.save-note');
-    newNoteBtn = document.querySelector('.new-note');
-    clearBtn = document.querySelector('.clear-btn');
-    noteList = document.querySelector('.list-container .list-group');
-
-    hide(noteForm);
-    saveNoteBtn.addEventListener('click', handleNoteSave);
-    newNoteBtn.addEventListener('click', handleNewNoteView);
-    if (clearBtn) {
-      clearBtn.addEventListener('click', renderActiveNote);
-    } else {
-      console.error('Clear button element not found.');
-    }
-    noteForm.addEventListener('input', handleRenderBtns);
-  } else {
-    console.error('Note form element not found.');
-  }
+  noteTitle = document.querySelector('.note-title');
+  noteText = document.querySelector('.note-textarea');
+  saveNoteBtn = document.querySelector('.save-note');
+  newNoteBtn = document.querySelector('.new-note');
+  clearBtn = document.querySelector('.clear-btn');
+  noteList = document.querySelectorAll('.list-container .list-group');
+  console.log(noteList);
 }
-
-// Add event listeners for newNoteBtn, saveNoteBtn, and noteForm outside the if block
-newNoteBtn.addEventListener('click', () => {
-  show(noteForm)
-  })
-
-
-  saveNoteBtn.addEventListener('click', () => {
-    hide(noteForm);
-  });
-
-  saveNoteBtn.addEventListener('click', () => {
-    renderActiveNote;
-  })
-// Rest of your code remains the same
-
 
 // Show an element
 const show = (elem) => {
@@ -55,10 +27,6 @@ const show = (elem) => {
 const hide = (elem) => {
   elem.style.display = 'none';
 };
-
-
-
-
 
 // activeNote is used to keep track of the note in the textarea
 let activeNote = {};
@@ -152,12 +120,9 @@ const handleNewNoteView = (e) => {
 
 // Renders the appropriate buttons based on the state of the form
 const handleRenderBtns = () => {
-  if (noteTitle.value) {
-    show(clearBtn);
-  } else {
-    hide(clearBtn);
-  }
-
+  show(clearBtn);
+  console.log(noteTitle.value)
+  console.log(noteText.value);
   if (!noteTitle.value.trim() && !noteText.value.trim()) {
     hide(clearBtn);
   } else if (!noteTitle.value.trim() || !noteText.value.trim()) {
@@ -167,12 +132,11 @@ const handleRenderBtns = () => {
   }
 };
 
-
-
 // Render the list of note titles
 const renderNoteList = async (notes) => {
   let jsonNotes = await notes.json();
-  if (window.location.pathname === '/notes') {
+  console.log(jsonNotes);
+  if (window.location.pathname === '/notes.html') {
     noteList.forEach((el) => (el.innerHTML = ''));
   }
 
@@ -218,7 +182,7 @@ const renderNoteList = async (notes) => {
     noteListItems.push(li);
   });
 
-  if (window.location.pathname === '/notes') {
+  if (window.location.pathname === '/notes.html') {
     noteListItems.forEach((note) => noteList[0].append(note));
   }
 };
@@ -226,7 +190,7 @@ const renderNoteList = async (notes) => {
 // Gets notes from the db and renders them to the sidebar
 const getAndRenderNotes = () => getNotes().then(renderNoteList);
 
-if (window.location.pathname === '/notes') {
+if (window.location.pathname === '/notes.html') {
   saveNoteBtn.addEventListener('click', handleNoteSave);
   newNoteBtn.addEventListener('click', handleNewNoteView);
   clearBtn.addEventListener('click', renderActiveNote);
@@ -234,4 +198,3 @@ if (window.location.pathname === '/notes') {
 }
 
 getAndRenderNotes();
-
