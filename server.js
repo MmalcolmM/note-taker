@@ -79,27 +79,32 @@ fs.readFile('./db/db.json', 'utf8', (err, data) => {
 //     }
 // });
 }})
+// Handle DELETE request to delete a note by ID
 app.delete('/api/notes/:id', (req, res) => {
-    const id = req.params.id;
+    const id = req.params.id; // Extract the ID parameter from the request URL
 
+    // Read the contents of the db.json file
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if (err) {
             console.error(err);
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(500).json({ error: 'Internal Server Error' }); // Send error response if reading file fails
             return;
         }
 
-        let notes = JSON.parse(data);
+        let notes = JSON.parse(data); // Parse the JSON data into a JavaScript object
+
+        // Filter out the note with the specified ID
         const updatedNotes = notes.filter(note => note.id !== id);
 
+        // Write the updated notes array back to the db.json file
         fs.writeFile('./db/db.json', JSON.stringify(updatedNotes, null, 4), writeErr => {
             if (writeErr) {
                 console.error(writeErr);
-                res.status(500).json({ error: 'Internal Server Error' });
+                res.status(500).json({ error: 'Internal Server Error' }); // Send error response if writing file fails
                 return;
             }
 
-            res.status(200).json({ message: 'Note deleted successfully' });
+            res.status(200).json({ message: 'Note deleted successfully' }); // Send success response after deleting the note
         });
     });
 });
